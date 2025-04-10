@@ -1,19 +1,17 @@
 package main
 
 import (
-	"net/http"
+	"context"
+	"fmt"
+	"os"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/ordrid/orders-api/application"
 )
 
 func main() {
-	r := chi.NewRouter()
+	app := application.New()
 
-	r.Use(middleware.Logger)
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!\n"))
-	})
-
-	http.ListenAndServe(":3000", r)
+	if err := app.Start(context.TODO()); err != nil {
+		fmt.Fprintln(os.Stderr, "failed to start app:", err)
+	}
 }
