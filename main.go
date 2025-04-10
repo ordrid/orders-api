@@ -1,21 +1,19 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
-	server := &http.Server{
-		Addr:    ":3000",
-		Handler: http.HandlerFunc(basicHandler),
-	}
+	r := chi.NewRouter()
 
-	if err := server.ListenAndServe(); err != nil {
-		fmt.Println("failed to listen and serve:", err)
-	}
-}
+	r.Use(middleware.Logger)
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Hello, World!\n"))
+	})
 
-func basicHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Hello, World!"))
+	http.ListenAndServe(":3000", r)
 }
